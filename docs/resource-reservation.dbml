@@ -1,0 +1,42 @@
+Enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+Table Resource {
+  id varchar [pk]
+  name varchar [not null]
+  category varchar [not null]
+  location varchar
+  capacity int [not null, default: 1]
+  description text
+  isActive boolean [not null, default: true]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Table Reservation {
+  id varchar [pk]
+  resourceId varchar [not null]
+  userName varchar [not null]
+  email varchar
+  title varchar [not null]
+  note text
+  startAt timestamp [not null]
+  endAt timestamp [not null]
+  status ReservationStatus [not null, default: 'CONFIRMED']
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+
+  indexes {
+    (resourceId, startAt)
+    (resourceId, endAt)
+    status
+  }
+}
+
+Ref: Reservation.resourceId > Resource.id [delete: cascade, update: cascade]
+
+// PostgreSQL migration adds CHECK (startAt < endAt) and a partial GiST
+// exclusion constraint preventing overlapping non-cancelled reservations.
