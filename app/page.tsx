@@ -460,35 +460,85 @@ export default function Home() {
         </section>
 
         <section className="booking-grid" id="reservations">
-          <div className="panel booking-panel">
-            <div className="section-heading">
-              <div><p className="eyebrow">The schedule</p><h2>Upcoming reservations</h2></div>
-              <span className="count-badge">{reservations.length} bookings</span>
-            </div>
-            {isLoading ? (
-              <div className="empty-state">Loading reservations…</div>
-            ) : reservations.length === 0 ? (
-              <div className="empty-state">Your schedule is clear. Create a reservation to see it here.</div>
-            ) : (
-              <div className="reservation-list">
-                {reservations.map((reservation) => (
-                  <article className="reservation-card" key={reservation.id}>
-                    <div className="reservation-date">
-                      <strong>{new Date(reservation.startAt).toLocaleDateString(undefined, { day: "2-digit" })}</strong>
-                      <span>{new Date(reservation.startAt).toLocaleDateString(undefined, { month: "short" })}</span>
-                    </div>
-                    <div className="reservation-details">
-                      <h3>{reservation.title}</h3>
-                      <p>{reservation.resource?.name ?? "Unknown resource"} <span>·</span> {reservation.userName}</p>
-                      <small>{localDateTime(reservation.startAt)} – {localDateTime(reservation.endAt)}</small>
-                    </div>
-                    <button className="cancel-button" type="button" onClick={() => void handleCancelReservation(reservation.id)} disabled={cancellingReservationId === reservation.id}>
-                      {cancellingReservationId === reservation.id ? "…" : "Cancel"}
-                    </button>
-                  </article>
-                ))}
+          <div className="booking-side">
+            <div className="panel booking-panel">
+              <div className="section-heading">
+                <div><p className="eyebrow">The schedule</p><h2>Upcoming reservations</h2></div>
+                <span className="count-badge">{reservations.length} bookings</span>
               </div>
-            )}
+              {isLoading ? (
+                <div className="empty-state">Loading reservations…</div>
+              ) : reservations.length === 0 ? (
+                <div className="empty-state">
+                  <span className="empty-calendar" aria-hidden="true">
+                    <span className="calendar-rings" />
+                    <span className="calendar-lines"><i /><i /><i /></span>
+                    <span className="calendar-check">✓</span>
+                  </span>
+                  <strong>Your schedule is clear</strong>
+                  <span>No upcoming bookings. Your team has room to plan.</span>
+                  <a href="#reservation-form">Make the first reservation <span aria-hidden="true">↗</span></a>
+                </div>
+              ) : (
+                <div className="reservation-list">
+                  {reservations.map((reservation) => (
+                    <article className="reservation-card" key={reservation.id}>
+                      <div className="reservation-date">
+                        <strong>{new Date(reservation.startAt).toLocaleDateString(undefined, { day: "2-digit" })}</strong>
+                        <span>{new Date(reservation.startAt).toLocaleDateString(undefined, { month: "short" })}</span>
+                      </div>
+                      <div className="reservation-details">
+                        <h3>{reservation.title}</h3>
+                        <p>{reservation.resource?.name ?? "Unknown resource"} <span>·</span> {reservation.userName}</p>
+                        <small>{localDateTime(reservation.startAt)} – {localDateTime(reservation.endAt)}</small>
+                      </div>
+                      <button className="cancel-button" type="button" onClick={() => void handleCancelReservation(reservation.id)} disabled={cancellingReservationId === reservation.id}>
+                        {cancellingReservationId === reservation.id ? "…" : "Cancel"}
+                      </button>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="panel availability-panel">
+              <div className="section-heading">
+                <div><p className="eyebrow">Live inventory</p><h2>Availability at a glance</h2></div>
+                <span className="live-badge"><i /> Live</span>
+              </div>
+              <div className="availability-overview">
+                <div className="availability-total">
+                  <strong>{isLoading ? "—" : stats.availableResources}</strong>
+                  <span>resources ready to book <small>of {isLoading ? "—" : stats.activeResources} active</small></span>
+                </div>
+                <div
+                  className="availability-bar"
+                  role="img"
+                  aria-label={`${stats.availableResources} of ${stats.activeResources} active resources available now`}
+                >
+                  <span style={{ width: `${stats.activeResources ? (stats.availableResources / stats.activeResources) * 100 : 0}%` }} />
+                </div>
+                <div className="availability-legend">
+                  <span><i className="legend-free" /> Available <strong>{isLoading ? "—" : stats.availableResources}</strong></span>
+                  <span><i className="legend-busy" /> In use <strong>{isLoading ? "—" : stats.busyResources}</strong></span>
+                </div>
+              </div>
+              <div className="availability-resource-list">
+                {resources.length === 0 && !isLoading ? (
+                  <p className="availability-empty">Add a resource to see its live status here.</p>
+                ) : resources.slice(0, 3).map((resource) => {
+                  const isBusy = busyResourceIds.includes(resource.id);
+                  const status = !resource.isActive ? "Offline" : isBusy ? "In use" : "Available";
+                  return (
+                    <div className="availability-resource" key={resource.id}>
+                      <span className="availability-resource-icon" aria-hidden="true">{resource.category.toLowerCase().includes("equipment") ? "▣" : "▦"}</span>
+                      <span className="availability-resource-name"><strong>{resource.name}</strong><small>{resource.location || resource.category}</small></span>
+                      <span className={`availability-resource-status ${!resource.isActive ? "resource-status-offline" : isBusy ? "resource-status-busy" : "resource-status-free"}`}><i />{status}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <a className="availability-footer-link" href="#resource-form">Manage your resources <span aria-hidden="true">↗</span></a>
+            </div>
           </div>
 
           <form className="panel form-panel reservation-form" id="reservation-form" onSubmit={handleReservationSubmit}>
