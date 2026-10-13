@@ -94,7 +94,12 @@ export async function POST(request: Request) {
       include: { resource: true },
     });
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2004") {
+    const isKnownConstraintViolation =
+      error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2004";
+    const isPostgresExclusionViolation =
+      error instanceof Error && error.message.includes("23P01");
+
+    if (isKnownConstraintViolation || isPostgresExclusionViolation) {
       return Response.json(
         { error: "This slot was just booked. Please choose another time." },
         { status: 409 },
