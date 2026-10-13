@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
@@ -15,14 +16,22 @@ export async function GET() {
   const reservations = await prisma.reservation.findMany({
     orderBy: { startAt: "asc" },
     include: { resource: true },
-    where: { status: { not: "CANCELLED" } },
+    where: {
+      status: { not: "CANCELLED" },
+      endAt: { gte: new Date() },
+    },
   });
 
   return Response.json(reservations);
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json({ error: "Request body must contain valid JSON." }, { status: 400 });
+  }
   const parsed = reservationSchema.safeParse(body);
 
   if (!parsed.success) {
@@ -69,36 +78,60 @@ export async function POST(request: Request) {
     );
   }
 
-  const reservation = await prisma.reservation.create({
-    data: {
-      resourceId,
-      userName: parsed.data.userName,
-      email: parsed.data.email,
-      title: parsed.data.title,
-      note: parsed.data.note || null,
-      startAt,
-      endAt,
-      status: "CONFIRMED",
-    },
-    include: { resource: true },
-  });
+  let reservation;
+  try {
+    reservation = await prisma.reservation.create({
+      data: {
+        resourceId,
+        userName: parsed.data.userName,
+        email: parsed.data.email,
+        title: parsed.data.title,
+        note: parsed.data.note || null,
+        startAt,
+        endAt,
+        status: "CONFIRMED",
+      },
+      include: { resource: true },
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2004") {
+      return Response.json(
+        { error: "This slot was just booked. Please choose another time." },
+        { status: 409 },
+      );
+    }
+    throw error;
+  }
 
   return Response.json(reservation, { status: 201 });
 }
 
 export async function DELETE(request: Request) {
-  const body = await request.json();
-  const reservationId = z.string().min(1).safeParse(body?.id);
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json({ error: "Request body must contain valid JSON." }, { status: 400 });
+  }
+  const reservationId = z.object({ id: z.string().min(1) }).safeParse(body);
 
   if (!reservationId.success) {
     return Response.json({ error: "A valid reservation ID is required." }, { status: 400 });
   }
 
-  const reservation = await prisma.reservation.update({
-    where: { id: reservationId.data },
-    data: { status: "CANCELLED" },
-    include: { resource: true },
-  });
+  let reservation;
+  try {
+    reservation = await prisma.reservation.update({
+      where: { id: reservationId.data.id },
+      data: { status: "CANCELLED" },
+      include: { resource: true },
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+      return Response.json({ error: "Reservation not found." }, { status: 404 });
+    }
+    throw error;
+  }
 
   return Response.json({ message: "Reservation cancelled.", reservation });
 }

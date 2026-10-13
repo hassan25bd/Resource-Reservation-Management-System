@@ -1,6 +1,8 @@
 # Demo video script (3–5 minutes)
 
-Target length: about 4 minutes. Record the browser at `http://localhost:3000` and narrate while using a database with a few sample resources. On a fresh database, run `npm run db:seed` first.
+Target length: about 4 minutes. The production application is available at [https://resource-reservation-management-sys.vercel.app](https://resource-reservation-management-sys.vercel.app). It is already connected to the hosted PostgreSQL database and has three sample resources. Alternatively, record locally at `http://localhost:3000` after following the README setup steps.
+
+Use fictional names and email addresses only. If recording against production, create a temporary demo reservation during recording and cancel it before finishing so the shared reviewer database is left clean.
 
 ## 0:00–0:25 — Introduce the problem
 
@@ -8,9 +10,9 @@ Target length: about 4 minutes. Record the browser at `http://localhost:3000` an
 
 ## 0:25–0:55 — Dashboard and resources
 
-Show the dashboard counters and resource catalog.
+Show the PrimeWave dashboard counters and resource catalog, including the live Available / In use / Offline indicators.
 
-“The dashboard summarizes the resource inventory, active resources, total reservations, and today’s bookings. The catalog shows each resource’s category, location, capacity, and active status. Resource details can be edited, and inactive resources are excluded from new bookings.”
+“The dashboard summarizes the resource inventory, currently available and occupied resources, and today's bookings. The catalog shows each resource's category, location, capacity, and live status. Resource details can be edited, and inactive resources are excluded from new bookings.”
 
 ## 0:55–1:30 — Add a resource
 
@@ -20,7 +22,7 @@ Create a resource such as “Training Room” with a location, capacity, and des
 
 ## 1:30–2:35 — Check availability and reserve
 
-Select a resource, enter the booker’s name and email, a booking title, and a time range. Check availability, then confirm the reservation. Show it in the bookings list.
+Select a resource, enter the booker’s name and email, a booking title, and a time range. Check availability, then confirm the reservation. Show it in the upcoming reservations list.
 
 “The availability endpoint checks overlapping bookings before the user submits. The server validates the booking data and checks again during creation.”
 
@@ -44,4 +46,5 @@ Cancel a booking and check the formerly occupied slot again.
 - Use realistic but fictional names and email addresses.
 - Confirm the app and PostgreSQL are running before recording.
 - Capture the conflict case and a successful booking.
+- Use fictional details and remove any temporary production reservation before ending.
 - Keep the final recording between 3 and 5 minutes.

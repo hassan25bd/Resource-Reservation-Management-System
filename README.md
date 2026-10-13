@@ -2,16 +2,26 @@
 
 A full-stack app for coordinating shared office resources such as meeting rooms, equipment, workspaces, and project labs. Staff can manage resources, check availability, make reservations, and cancel bookings from a central dashboard.
 
+## Live application
+
+The production application is deployed on Vercel and uses a hosted Neon PostgreSQL database:
+
+- App: [resource-reservation-management-sys.vercel.app](https://resource-reservation-management-sys.vercel.app)
+- Repository ER diagram: [docs/er-diagram.md](./docs/er-diagram.md)
+
+Do not enter real personal information in the public demo. The production database is shared with reviewers.
+
 ## Features
 
 - Dashboard summaries for resources, active resources, reservations, and bookings today
+- Live availability indicators for active, available, and currently occupied resources
 - Resource creation, editing, and active/inactive status
 - Reservation creation and cancellation
 - Availability checks for a requested time window
 - Server-side validation and overlap checks
 - PostgreSQL exclusion constraint as the final guard against concurrent double-booking
 - Persistent storage with PostgreSQL and Prisma
-- PrimeWave-inspired dark interface with green/cyan accents
+- Responsive PrimeWave-branded interface with a clean white, emerald, and deep-green palette
 
 ## Technology
 
@@ -100,6 +110,15 @@ npm run db:seed
 - The database enforces `startAt < endAt` and prevents overlapping non-cancelled time ranges for the same resource.
 
 See [the ER diagram](./docs/er-diagram.md) and [DBML source](./docs/resource-reservation.dbml).
+
+## Project structure
+
+- `app/` contains the dashboard, shared visual styles, and Next.js Route Handlers under `app/api/`.
+- `app/api/resources/` manages the resource catalog; `app/api/reservations/` creates and cancels bookings.
+- `app/api/availability/` checks a requested time range; `app/api/dashboard/` provides summary and live inventory availability.
+- `lib/prisma.ts` provides the shared Prisma client.
+- `prisma/` contains the PostgreSQL data model, migrations, and repeatable sample-data seed.
+- `docs/` contains the ER diagram, demo script, and submission checklist.
 
 ## Demo and submission materials
 

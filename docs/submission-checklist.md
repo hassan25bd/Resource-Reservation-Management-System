@@ -11,6 +11,8 @@
 - [x] Mermaid ER diagram and DBML source
 - [x] Idempotent sample-resource seed command
 - [x] Demo video narration script
+- [x] Production deployment with hosted Neon PostgreSQL
+- [x] Production migrations and sample resource catalog
 
 ## Local validation
 
@@ -22,10 +24,11 @@
 
 ## External submission steps
 
-- [ ] Create/publish a GitHub repository under the applicant’s account and push this project
+- [x] GitHub repository exists and is connected to the Vercel project
+- [ ] Push the latest source and submission-documentation updates to GitHub
 - [ ] Upload the 3–5 minute demonstration video and make it accessible to reviewers
-- [ ] Import `resource-reservation.dbml` into dbdiagram.io (or publish the Mermaid diagram) and create a reviewer-accessible share link
-- [ ] Submit the repository, video, and ER diagram links through the official form
+- [ ] Confirm the public GitHub [ER diagram](./er-diagram.md) link is reviewer-accessible, or import `resource-reservation.dbml` into dbdiagram.io and create a share link
+- [ ] Submit the repository, video, and ER diagram links through the official form (the link in the supplied brief currently returns "Dynamic Link Not Found"; obtain a working form URL)
 - [ ] Use the same email address that was used when applying for the internship
 
-External accounts, video recording, and the official submission form are outside this local workspace. Do not publish database credentials; commit only `.env.example`.
+The production app is available at [resource-reservation-management-sys.vercel.app](https://resource-reservation-management-sys.vercel.app). The form URL printed in the supplied assessment brief currently returns "Dynamic Link Not Found", so get a corrected URL from the assessment contact before submitting. The form also requires the applicant's application email and final video/diagram links. Record with fictional booking details and clear any temporary production reservation afterwards. Do not publish database credentials; commit only `.env.example`.
