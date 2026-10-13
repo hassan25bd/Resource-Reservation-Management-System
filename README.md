@@ -10,7 +10,7 @@ The production application is deployed on Vercel and uses a hosted Neon PostgreS
 - GitHub repository: [Resource Reservation Management System](https://github.com/hassan25bd/Resource-Reservation-Management-System)
 - Public ER diagram: [docs/er-diagram.md](https://github.com/hassan25bd/Resource-Reservation-Management-System/blob/main/docs/er-diagram.md)
 
-Do not enter real personal information in the public demo. The production database is shared with reviewers.
+The production database contains shared sample data. Avoid entering confidential or real personal information.
 
 ## Features
 
@@ -119,22 +119,6 @@ See [the ER diagram](./docs/er-diagram.md) and [DBML source](./docs/resource-res
 - `app/api/availability/` checks a requested time range; `app/api/dashboard/` provides summary and live inventory availability.
 - `lib/prisma.ts` provides the shared Prisma client.
 - `prisma/` contains the PostgreSQL data model, migrations, and repeatable sample-data seed.
-- `docs/` contains the ER diagram, demo script, and submission checklist.
-
-## Demo and submission materials
-
-- [3–5 minute demo video script](./docs/demo-video-script.md)
-- [Submission checklist](./docs/submission-checklist.md)
-
-The diagram source and recording script are prepared in this repository. Publishing the source to GitHub, recording/uploading the demo, and creating a public share link for the ER diagram require access to the user's external accounts and are not performed automatically by this local project.
-
-## Repository setup
-
-The project has a local Git repository. `.env` and `.env.local` are intentionally ignored; `.env.example` is safe to commit. To publish, create an empty GitHub repository under your account, add it as the `origin` remote, and push the branch.
-
-```powershell
-git remote add origin https://github.com/YOUR-ACCOUNT/resource-reservation-management-system.git
-git push -u origin master
-```
+- `docs/` contains the ER diagram and DBML schema source.
 
 Do not commit real database credentials or other secrets.
