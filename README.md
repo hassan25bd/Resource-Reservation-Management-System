@@ -15,7 +15,7 @@ The production database contains shared sample data. Avoid entering confidential
 ## Features
 
 - Dashboard summaries for resources, active resources, reservations, and bookings today
-- Live availability indicators for active, available, and currently occupied resources
+- Availability indicators for active, available, and currently occupied resources, refreshed every 30 seconds while the dashboard is open
 - Resource creation, editing, and active/inactive status
 - Reservation creation and cancellation
 - Availability checks for a requested time window

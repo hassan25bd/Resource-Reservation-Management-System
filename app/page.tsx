@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Resource = {
   id: string;
@@ -110,13 +110,16 @@ export default function Home() {
   const [isSavingReservation, setIsSavingReservation] = useState(false);
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const [cancellingReservationId, setCancellingReservationId] = useState<string | null>(null);
+  const refreshSequence = useRef(0);
 
   const refreshData = useCallback(async () => {
+    const sequence = ++refreshSequence.current;
+
     try {
       const [resourceResponse, reservationResponse, dashboardResponse] = await Promise.all([
-        fetch("/api/resources"),
-        fetch("/api/reservations"),
-        fetch("/api/dashboard"),
+        fetch("/api/resources", { cache: "no-store" }),
+        fetch("/api/reservations", { cache: "no-store" }),
+        fetch("/api/dashboard", { cache: "no-store" }),
       ]);
       const [resourceData, reservationData, dashboardData] = await Promise.all([
         readJson(resourceResponse),
@@ -131,6 +134,8 @@ export default function Home() {
         throw new Error("The server returned unexpected dashboard data.");
       }
 
+      if (sequence !== refreshSequence.current) return;
+
       setResources(resourceData as Resource[]);
       setReservations(reservationData as Reservation[]);
       if (isRecord(dashboardData.stats)) {
@@ -143,18 +148,52 @@ export default function Home() {
       );
       setError(null);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Unable to load reservation data.");
+      if (sequence === refreshSequence.current) {
+        setError(cause instanceof Error ? cause.message : "Unable to load reservation data.");
+      }
     } finally {
-      setIsLoading(false);
+      if (sequence === refreshSequence.current) setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      void refreshData();
-    }, 0);
+    let timer: number | undefined;
+    let disposed = false;
 
-    return () => window.clearTimeout(timer);
+    const clearTimer = () => {
+      if (timer !== undefined) {
+        window.clearTimeout(timer);
+        timer = undefined;
+      }
+    };
+
+    const scheduleRefresh = () => {
+      clearTimer();
+      if (disposed || document.hidden) return;
+
+      timer = window.setTimeout(() => {
+        void refreshData().finally(scheduleRefresh);
+      }, 30_000);
+    };
+
+    const refreshOnReturn = () => {
+      if (document.hidden) {
+        clearTimer();
+        return;
+      }
+      void refreshData().finally(scheduleRefresh);
+    };
+
+    timer = window.setTimeout(() => {
+      void refreshData().finally(scheduleRefresh);
+    }, 0);
+    document.addEventListener("visibilitychange", refreshOnReturn);
+
+    return () => {
+      disposed = true;
+      clearTimer();
+      document.removeEventListener("visibilitychange", refreshOnReturn);
+    };
   }, [refreshData]);
 
   const checkAvailability = async () => {
@@ -503,7 +542,7 @@ export default function Home() {
             <div className="panel availability-panel">
               <div className="section-heading">
                 <div><p className="eyebrow">Live inventory</p><h2>Availability at a glance</h2></div>
-                <span className="live-badge"><i /> Live</span>
+                <span className="live-badge" title="Automatically refreshes every 30 seconds while this page is open, and when you return to the tab"><i /> Live · 30s</span>
               </div>
               <div className="availability-overview">
                 <div className="availability-total">
