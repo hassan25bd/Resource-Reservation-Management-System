@@ -25,9 +25,9 @@
 ## External submission steps
 
 - [x] GitHub repository exists and is connected to the Vercel project
-- [ ] Push the latest source and submission-documentation updates to GitHub
+- [x] Push the latest source and submission-documentation updates to GitHub
 - [ ] Upload the 3–5 minute demonstration video and make it accessible to reviewers
-- [ ] Confirm the public GitHub [ER diagram](./er-diagram.md) link is reviewer-accessible, or import `resource-reservation.dbml` into dbdiagram.io and create a share link
+- [x] Confirm the public GitHub [ER diagram](https://github.com/hassan25bd/Resource-Reservation-Management-System/blob/main/docs/er-diagram.md) link is reviewer-accessible (HTTP 200); a separate dbdiagram.io link is optional
 - [ ] Submit the repository, video, and ER diagram links through the official form (the link in the supplied brief currently returns "Dynamic Link Not Found"; obtain a working form URL)
 - [ ] Use the same email address that was used when applying for the internship
 

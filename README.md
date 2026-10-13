@@ -7,7 +7,8 @@ A full-stack app for coordinating shared office resources such as meeting rooms,
 The production application is deployed on Vercel and uses a hosted Neon PostgreSQL database:
 
 - App: [resource-reservation-management-sys.vercel.app](https://resource-reservation-management-sys.vercel.app)
-- Repository ER diagram: [docs/er-diagram.md](./docs/er-diagram.md)
+- GitHub repository: [Resource Reservation Management System](https://github.com/hassan25bd/Resource-Reservation-Management-System)
+- Public ER diagram: [docs/er-diagram.md](https://github.com/hassan25bd/Resource-Reservation-Management-System/blob/main/docs/er-diagram.md)
 
 Do not enter real personal information in the public demo. The production database is shared with reviewers.
 
