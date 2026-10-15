@@ -336,6 +336,30 @@ export default function BookingsPage() {
                 <span><i className="legend-busy" /> In use <strong>{busyResourceIds.length}</strong></span>
               </div>
             </div>
+
+            <aside className="panel booking-tips" aria-label="Booking tips">
+              <div className="section-heading">
+                <div>
+                  <p className="eyebrow">Good to know</p>
+                  <h2>Plan with confidence</h2>
+                </div>
+                <span className="form-badge" aria-hidden="true">✓</span>
+              </div>
+              <ul className="booking-tips-list">
+                <li>
+                  <span aria-hidden="true">01</span>
+                  <div><strong>Check availability first</strong><small>We check again when you confirm.</small></div>
+                </li>
+                <li>
+                  <span aria-hidden="true">02</span>
+                  <div><strong>Your bookings stay private</strong><small>Only your upcoming reservations appear here.</small></div>
+                </li>
+                <li>
+                  <span aria-hidden="true">03</span>
+                  <div><strong>Plans changed?</strong><small>Cancel a reservation from your schedule.</small></div>
+                </li>
+              </ul>
+            </aside>
           </div>
         </div>
 
