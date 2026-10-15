@@ -19,6 +19,7 @@ Table Resource {
 Table Reservation {
   id varchar [pk]
   resourceId varchar [not null]
+  userId varchar
   userName varchar [not null]
   email varchar
   title varchar [not null]
@@ -33,10 +34,35 @@ Table Reservation {
     (resourceId, startAt)
     (resourceId, endAt)
     status
+    userId
+  }
+}
+
+Table User {
+  id varchar [pk]
+  name varchar [not null]
+  email varchar [not null, unique]
+  passwordHash varchar [not null]
+  passwordSalt varchar [not null]
+  createdAt timestamp [not null]
+}
+
+Table AuthSession {
+  id varchar [pk]
+  tokenHash varchar [not null, unique]
+  userId varchar [not null]
+  expiresAt timestamp [not null]
+  createdAt timestamp [not null]
+
+  indexes {
+    userId
+    expiresAt
   }
 }
 
 Ref: Reservation.resourceId > Resource.id [delete: cascade, update: cascade]
+Ref: Reservation.userId > User.id [delete: set null, update: cascade]
+Ref: AuthSession.userId > User.id [delete: cascade, update: cascade]
 
 // PostgreSQL migration adds CHECK (startAt < endAt) and a partial GiST
 // exclusion constraint preventing overlapping non-cancelled reservations.
