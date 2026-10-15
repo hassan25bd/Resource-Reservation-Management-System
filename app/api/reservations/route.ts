@@ -1,11 +1,11 @@
 import { Prisma } from "@prisma/client";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
 import { z } from "zod";
 
 const reservationSchema = z.object({
   resourceId: z.string().min(1, "Resource is required."),
-  userName: z.string().min(2, "Name is required."),
-  email: z.string().email("Please use a valid email."),
   title: z.string().min(3, "Booking title is required."),
   note: z.string().optional().or(z.literal("")),
   startAt: z.coerce.date(),
@@ -13,10 +13,16 @@ const reservationSchema = z.object({
 });
 
 export async function GET() {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Sign in to view your bookings." }, { status: 401 });
+  }
+
   const reservations = await prisma.reservation.findMany({
     orderBy: { startAt: "asc" },
     include: { resource: true },
     where: {
+      userId: user.id,
       status: { not: "CANCELLED" },
       endAt: { gte: new Date() },
     },
@@ -26,6 +32,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Sign in to create a booking." }, { status: 401 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -83,8 +94,9 @@ export async function POST(request: Request) {
     reservation = await prisma.reservation.create({
       data: {
         resourceId,
-        userName: parsed.data.userName,
-        email: parsed.data.email,
+        userId: user.id,
+        userName: user.name,
+        email: user.email,
         title: parsed.data.title,
         note: parsed.data.note || null,
         startAt,
@@ -112,6 +124,11 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Sign in to cancel a booking." }, { status: 401 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -127,7 +144,7 @@ export async function DELETE(request: Request) {
   let reservation;
   try {
     reservation = await prisma.reservation.update({
-      where: { id: reservationId.data.id },
+      where: { id: reservationId.data.id, userId: user.id },
       data: { status: "CANCELLED" },
       include: { resource: true },
     });

@@ -14,36 +14,65 @@ enum ReservationStatus {
 }
 
 model Resource {
-  id          String       @id @default(cuid())
-  name        String
-  category    String
-  location    String?
-  capacity    Int          @default(1)
-  description String?
-  isActive    Boolean      @default(true)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id           String        @id @default(cuid())
+  name         String
+  category     String
+  location     String?
+  capacity     Int           @default(1)
+  description  String?
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   reservations Reservation[]
 
   @@map("Resource")
 }
 
 model Reservation {
-  id        String            @id @default(cuid())
+  id         String            @id @default(cuid())
   resourceId String
   resource   Resource          @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-  userName  String
-  email     String?
-  title     String
-  note      String?
-  startAt   DateTime
-  endAt     DateTime
-  status    ReservationStatus @default(CONFIRMED)
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  userId     String?
+  user       User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userName   String
+  email      String?
+  title      String
+  note       String?
+  startAt    DateTime
+  endAt      DateTime
+  status     ReservationStatus @default(CONFIRMED)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
 
   @@index([resourceId, startAt])
   @@index([resourceId, endAt])
   @@index([status])
+  @@index([userId])
   @@map("Reservation")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  passwordHash String
+  passwordSalt String
+  createdAt    DateTime      @default(now())
+  sessions     AuthSession[]
+  reservations Reservation[]
+
+  @@map("User")
+}
+
+model AuthSession {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("AuthSession")
 }

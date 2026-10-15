@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PrimeWave | Resource Reservation",
-  description: "A live resource and reservation dashboard by PrimeWave Lab.",
+  title: "PrimeWave | Space Booking",
+  description: "Browse shared spaces, check availability, and manage your bookings with PrimeWave.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -19,6 +19,8 @@ The production database contains shared sample data. Avoid entering confidential
 - Resource creation, editing, and active/inactive status
 - Reservation creation and cancellation
 - Availability checks for a requested time window
+- Email/password registration and login with secure HTTP-only sessions
+- Private booking lists and reservation ownership checks
 - Server-side validation and overlap checks
 - PostgreSQL exclusion constraint as the final guard against concurrent double-booking
 - Persistent storage with PostgreSQL and Prisma
@@ -32,6 +34,7 @@ The production database contains shared sample data. Avoid entering confidential
 - PostgreSQL
 - Prisma ORM
 - Zod validation
+- Node.js scrypt password hashing and database-backed sessions
 
 ## Requirements
 
@@ -72,6 +75,8 @@ The production database contains shared sample data. Avoid entering confidential
    ```
 
    The migrations create the tables and install a PostgreSQL exclusion constraint that rejects overlapping active reservations for the same resource. Adjacent reservations are allowed; cancelled reservations do not block a time slot.
+
+   The authentication migration adds account and session tables. Run the migrations before starting the app; newly registered accounts are stored in the configured PostgreSQL database.
 
 5. (Optional) Add the sample resource catalog:
 
@@ -114,10 +119,11 @@ See [the ER diagram](./docs/er-diagram.md) and [DBML source](./docs/resource-res
 
 ## Project structure
 
-- `app/` contains the dashboard, shared visual styles, and Next.js Route Handlers under `app/api/`.
+- `app/` contains the booking home page, resource and booking pages, shared visual styles, and Next.js Route Handlers under `app/api/`.
 - `app/api/resources/` manages the resource catalog; `app/api/reservations/` creates and cancels bookings.
 - `app/api/availability/` checks a requested time range; `app/api/dashboard/` provides summary and live inventory availability.
 - `lib/prisma.ts` provides the shared Prisma client.
+- `lib/auth.ts` provides password hashing and database-backed session utilities.
 - `prisma/` contains the PostgreSQL data model, migrations, and repeatable sample-data seed.
 - `docs/` contains the ER diagram and DBML schema source.
 

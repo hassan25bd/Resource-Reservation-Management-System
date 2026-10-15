@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth";
 import { z } from "zod";
 
 const resourceSchema = z.object({
@@ -23,6 +25,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Sign in to manage resources." }, { status: 401 });
+  }
+
   const body = await request.json();
   const parsed = resourceSchema.safeParse(body);
 
@@ -50,6 +57,11 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Sign in to manage resources." }, { status: 401 });
+  }
+
   const body = await request.json();
   const parsed = updateResourceSchema.safeParse(body);
 
