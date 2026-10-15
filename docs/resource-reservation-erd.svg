@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="850" viewBox="0 0 1280 850" role="img" aria-labelledby="title description">
+  <title id="title">ERD — Resource Reservation Management System</title>
+  <desc id="description">A classic entity relationship diagram showing User, Reservation, Resource, and AuthSession tables, their primary and foreign keys, and one-to-many relationships.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #222; }
+      .heading { font-size: 26px; font-weight: 600; }
+      .table { fill: #fff; stroke: #333; stroke-width: 1.5; }
+      .header { fill: #d9d9d9; }
+      .name { font-size: 14px; font-weight: 600; }
+      .label { font-size: 12px; }
+      .type { font-size: 11px; fill: #555; }
+      .relation { fill: none; stroke: #353535; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+      .cardinality { font-size: 11px; font-weight: 600; fill: #444; }
+      .legend { font-size: 12px; fill: #555; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="850" fill="#fff"/>
+  <text x="46" y="58" class="heading">ERD — Resource Reservation Management System</text>
+  <text x="47" y="83" class="legend">PostgreSQL database schema · Primary keys, foreign keys, and relationship cardinalities</text>
+
+  <!-- Relationships sit behind the tables. -->
+  <path d="M420 219 H475 V241 H540" class="relation"/>
+  <path d="M420 213 V225 M420 213 H432 M420 225 H432" class="relation"/>
+  <path d="M528 235 L540 241 L528 247 M528 241 H540" class="relation"/>
+  <text x="432" y="207" class="cardinality">1</text>
+  <text x="487" y="229" class="cardinality">0..*</text>
+
+  <path d="M895 332 H850 V354 H800" class="relation"/>
+  <path d="M895 326 V338 M895 326 H883 M895 338 H883" class="relation"/>
+  <path d="M812 348 L800 354 L812 360 M812 354 H800" class="relation"/>
+  <text x="873" y="318" class="cardinality">1</text>
+  <text x="820" y="345" class="cardinality">0..*</text>
+
+  <path d="M205 425 V526 H360" class="relation"/>
+  <path d="M199 425 H211 M199 425 V437 M211 425 V437" class="relation"/>
+  <path d="M348 520 L360 526 L348 532 M348 526 H360" class="relation"/>
+  <text x="216" y="447" class="cardinality">1</text>
+  <text x="326" y="518" class="cardinality">0..*</text>
+
+  <!-- User -->
+  <g>
+    <rect x="60" y="130" width="360" height="295" rx="4" class="table"/>
+    <path d="M64 130 H416 Q420 130 420 134 V169 H60 V134 Q60 130 64 130Z" class="header"/>
+    <line x1="60" y1="169" x2="420" y2="169" stroke="#333" stroke-width="1.2"/>
+    <text x="240" y="155" text-anchor="middle" class="name">User</text>
+    <line x1="122" y1="169" x2="122" y2="425" stroke="#bbb"/>
+    <text x="76" y="191" class="label">PK</text><text x="136" y="191" class="label">id</text><text x="405" y="191" text-anchor="end" class="type">String</text>
+    <text x="136" y="223" class="label">name</text><text x="405" y="223" text-anchor="end" class="type">String</text>
+    <text x="76" y="255" class="label">UK</text><text x="136" y="255" class="label">email</text><text x="405" y="255" text-anchor="end" class="type">String</text>
+    <text x="136" y="287" class="label">passwordHash</text><text x="405" y="287" text-anchor="end" class="type">String</text>
+    <text x="136" y="319" class="label">passwordSalt</text><text x="405" y="319" text-anchor="end" class="type">String</text>
+    <text x="136" y="351" class="label">createdAt</text><text x="405" y="351" text-anchor="end" class="type">DateTime</text>
+    <text x="76" y="383" class="label">1:N</text><text x="136" y="383" class="label">AuthSession, Reservation</text>
+    <text x="76" y="407" class="label">Note</text><text x="136" y="407" class="type">Reservation.userId is optional</text>
+  </g>
+
+  <!-- Reservation -->
+  <g>
+    <rect x="540" y="130" width="260" height="449" rx="4" class="table"/>
+    <path d="M544 130 H796 Q800 130 800 134 V169 H540 V134 Q540 130 544 130Z" class="header"/>
+    <line x1="540" y1="169" x2="800" y2="169" stroke="#333" stroke-width="1.2"/>
+    <text x="670" y="155" text-anchor="middle" class="name">Reservation</text>
+    <line x1="602" y1="169" x2="602" y2="579" stroke="#bbb"/>
+    <text x="556" y="191" class="label">PK</text><text x="616" y="191" class="label">id</text><text x="786" y="191" text-anchor="end" class="type">String</text>
+    <text x="556" y="223" class="label">FK</text><text x="616" y="223" class="label">resourceId</text><text x="786" y="223" text-anchor="end" class="type">String</text>
+    <text x="556" y="255" class="label">FK</text><text x="616" y="255" class="label">userId?</text><text x="786" y="255" text-anchor="end" class="type">String?</text>
+    <text x="616" y="287" class="label">userName</text><text x="786" y="287" text-anchor="end" class="type">String</text>
+    <text x="616" y="319" class="label">email?</text><text x="786" y="319" text-anchor="end" class="type">String?</text>
+    <text x="616" y="351" class="label">title</text><text x="786" y="351" text-anchor="end" class="type">String</text>
+    <text x="616" y="383" class="label">note?</text><text x="786" y="383" text-anchor="end" class="type">String?</text>
+    <text x="616" y="415" class="label">startAt</text><text x="786" y="415" text-anchor="end" class="type">DateTime</text>
+    <text x="616" y="447" class="label">endAt</text><text x="786" y="447" text-anchor="end" class="type">DateTime</text>
+    <text x="616" y="479" class="label">status</text><text x="786" y="479" text-anchor="end" class="type">ReservationStatus</text>
+    <text x="616" y="511" class="label">createdAt</text><text x="786" y="511" text-anchor="end" class="type">DateTime</text>
+    <text x="616" y="543" class="label">updatedAt</text><text x="786" y="543" text-anchor="end" class="type">DateTime</text>
+  </g>
+
+  <!-- Resource -->
+  <g>
+    <rect x="895" y="130" width="325" height="385" rx="4" class="table"/>
+    <path d="M899 130 H1216 Q1220 130 1220 134 V169 H895 V134 Q895 130 899 130Z" class="header"/>
+    <line x1="895" y1="169" x2="1220" y2="169" stroke="#333" stroke-width="1.2"/>
+    <text x="1057.5" y="155" text-anchor="middle" class="name">Resource</text>
+    <line x1="957" y1="169" x2="957" y2="515" stroke="#bbb"/>
+    <text x="911" y="191" class="label">PK</text><text x="971" y="191" class="label">id</text><text x="1205" y="191" text-anchor="end" class="type">String</text>
+    <text x="971" y="223" class="label">name</text><text x="1205" y="223" text-anchor="end" class="type">String</text>
+    <text x="971" y="255" class="label">category</text><text x="1205" y="255" text-anchor="end" class="type">String</text>
+    <text x="971" y="287" class="label">location?</text><text x="1205" y="287" text-anchor="end" class="type">String?</text>
+    <text x="971" y="319" class="label">capacity</text><text x="1205" y="319" text-anchor="end" class="type">Int</text>
+    <text x="971" y="351" class="label">description?</text><text x="1205" y="351" text-anchor="end" class="type">String?</text>
+    <text x="971" y="383" class="label">isActive</text><text x="1205" y="383" text-anchor="end" class="type">Boolean</text>
+    <text x="971" y="415" class="label">createdAt</text><text x="1205" y="415" text-anchor="end" class="type">DateTime</text>
+    <text x="971" y="447" class="label">updatedAt</text><text x="1205" y="447" text-anchor="end" class="type">DateTime</text>
+    <text x="911" y="487" class="label">1:N</text><text x="971" y="487" class="label">Reservation</text>
+  </g>
+
+  <!-- AuthSession -->
+  <g>
+    <rect x="60" y="526" width="360" height="256" rx="4" class="table"/>
+    <path d="M64 526 H416 Q420 526 420 530 V565 H60 V530 Q60 526 64 526Z" class="header"/>
+    <line x1="60" y1="565" x2="420" y2="565" stroke="#333" stroke-width="1.2"/>
+    <text x="240" y="551" text-anchor="middle" class="name">AuthSession</text>
+    <line x1="122" y1="565" x2="122" y2="782" stroke="#bbb"/>
+    <text x="76" y="587" class="label">PK</text><text x="136" y="587" class="label">id</text><text x="405" y="587" text-anchor="end" class="type">String</text>
+    <text x="76" y="619" class="label">UK</text><text x="136" y="619" class="label">tokenHash</text><text x="405" y="619" text-anchor="end" class="type">String</text>
+    <text x="76" y="651" class="label">FK</text><text x="136" y="651" class="label">userId</text><text x="405" y="651" text-anchor="end" class="type">String</text>
+    <text x="136" y="683" class="label">expiresAt</text><text x="405" y="683" text-anchor="end" class="type">DateTime</text>
+    <text x="136" y="715" class="label">createdAt</text><text x="405" y="715" text-anchor="end" class="type">DateTime</text>
+    <text x="76" y="755" class="label">1:N</text><text x="136" y="755" class="label">User has many sessions</text>
+  </g>
+
+  <line x1="60" y1="810" x2="1220" y2="810" stroke="#ddd"/>
+  <text x="60" y="833" class="legend">PK = Primary Key  ·  FK = Foreign Key  ·  UK = Unique Key  ·  ? = Optional / nullable  ·  1:N = One-to-many</text>
+</svg>

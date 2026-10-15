@@ -1,5 +1,12 @@
 # ER Diagram
 
+![Resource Reservation System entity relationship diagram](./resource-reservation-erd.svg)
+
+The diagram above shows all four database entities, their key fields, optional
+values, and relationship cardinalities. The editable Mermaid version is below;
+the [DBML source](./resource-reservation.dbml) can also be imported into
+dbdiagram.io.
+
 ```mermaid
 erDiagram
     Resource ||--o{ Reservation : contains
